@@ -31,7 +31,8 @@ sudo apt-get install webmin
 This method can also be used to make Webmin accessible via an Apache virtual host, like http://webmin.yourdomain.com/. The steps to follow are :
 Make sure mod_proxy is installed on your Apache webserver.
 Add a virtual host to your Apache configuration file like:
-```<VirtualHost _default_>
+```
+<VirtualHost _default_>
 ServerName webmin.yourdomain.com
 ProxyPass / http://localhost:10000/
 ProxyPassReverse / http://localhost:10000/
