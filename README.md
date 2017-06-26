@@ -3,7 +3,8 @@ Code and scripts to install and mainatin my ubuntu server. This provides means t
 
 # Post install
 ## Static IP
-Edit ```/etc/network/interfaces```
+Edit `/etc/network/interfaces`
+
 ```
 # The loopback network interface
 auto lo
@@ -43,7 +44,29 @@ allow from all
 </VirtualHost>
 ```
 If the virtual host uses a port other than 80 (like 9000), add a line to your Apache configuration like :
-```Listen 9000```
-In ```/etc/webmin/config```, add the ```line referer=apachehost```, where apachehost is the hostname from the URL used to access Webmin via Apache. If the referer line already has some hosts listed, add apachehost to it.
+`Listen 9000`
+In `/etc/webmin/config`, add the `line referer=apachehost`, where apachehost is the hostname from the URL used to access Webmin via Apache. If the referer line already has some hosts listed, add apachehost to it.
 Re-start Apache to apply the configuration.
-No changes need to be made to ```/etc/webmin/config```, because no prefix is appended to the URL path.
+No changes need to be made to `/etc/webmin/config`, because no prefix is appended to the URL path.
+
+
+
+### Flush All Rules, Delete All Chains, and Accept All
+This section will show you how to flush all of your firewall rules, tables, and chains, and allow all network traffic.
+
+Note: This will effectively disable your firewall. You should only follow this section if you want to start over the configuration of your firewall.
+
+First, set the default policies for each of the built-in chains to ACCEPT. The main reason to do this is to ensure that you won't be locked out from your server via SSH:
+```
+sudo iptables -P INPUT ACCEPT
+sudo iptables -P FORWARD ACCEPT
+sudo iptables -P OUTPUT ACCEPT
+```
+Then flush the nat and mangle tables, flush all chains (-F), and delete all non-default chains (-X):
+
+```sudo iptables -t nat -F
+sudo iptables -t mangle -F
+sudo iptables -F
+sudo iptables -X
+```
+Your firewall will now allow all network traffic. If you list your rules now, you will will see there are none, and only the three default chains (INPUT, FORWARD, and OUTPUT) remain.
